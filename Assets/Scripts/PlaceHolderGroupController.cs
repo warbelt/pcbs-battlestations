@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using Cinemachine;
 public class PlaceHolderGroupController : MonoBehaviour
 {
     [SerializeField] private List<Placeholder> m_placeholderElements = new List<Placeholder>();
@@ -17,9 +17,13 @@ public class PlaceHolderGroupController : MonoBehaviour
 
     private GameObject m_activePlacedItem;
     private GameObject m_activePreviewItem;
+    private CinemachineVirtualCamera m_activeVirtualCamera;
+
+    public CinemachineVirtualCamera vcam;
 
     private void Start()
     {
+
         foreach (Placeholder placeholder in m_placeholderElements)
         {
             placeholder.OnMouseEnterEvent += Placeholder_OnMouseEnterEventHandler;
@@ -67,5 +71,28 @@ public class PlaceHolderGroupController : MonoBehaviour
         m_activePlacedItem.transform.rotation = placeholder.transform.rotation;
 
         m_activePlacedItem.SetActive(true);
+
+        CinemachineVirtualCamera vcam = placeholder.getOverrideVirtualCamera();
+        if (vcam != null)
+        {
+            if (m_activeVirtualCamera != null)
+            {
+                m_activeVirtualCamera.Priority = 10;
+            }
+
+            vcam.Priority = 100;
+            m_activeVirtualCamera = vcam;
+        }
+    }
+
+    public void SetPreviewPrefab(GameObject previewPrefab)
+    {
+        m_PreviewItemInstance = Instantiate(previewPrefab);
+    }
+
+
+    public void SetPlacePrefab(GameObject placePrefab)
+    {
+        m_PlacedItemInstance = Instantiate(placePrefab);
     }
 }

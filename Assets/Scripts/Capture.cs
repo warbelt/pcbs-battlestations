@@ -8,7 +8,9 @@ public class Capture : MonoBehaviour
     int photoWidth = 1920, photoHeight = 1080;
     [SerializeField] float screenshotPanelVanishWaitSeconds = 1;
     [SerializeField] float screenshotPanelVanishFadeSeconds = 1;
-    
+
+    [SerializeField] AudioSource shutterNoise = null;
+
     public Camera renderCam;
     public GameObject phototohud;
     public Canvas canvas;
@@ -44,6 +46,11 @@ public class Capture : MonoBehaviour
             Camera.main.targetTexture = null;
             RenderTexture.active = null; // JC: added to avoid errors
             Destroy(rt);
+
+            if (shutterNoise != null)
+            {
+                shutterNoise.Play();
+            }
 
             StartCoroutine(VanishScreenshotPanel());
 
